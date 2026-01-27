@@ -37,12 +37,12 @@
         "authorizations": [
           {
             "PrincipalId": "ac16bf33-cebb-44ea-b8d2-30650cf35bd2",
-            "RoleDefinitionId": "/providers/Microsoft.Authorization/roleDefinitions/cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e",
+            "RoleDefinitionId": "cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e",
             "PrincipalIdDisplayName": "Partner Support Team"
           },
           {
             "PrincipalId": "3a829362-01c3-4bda-b6a2-fcbbb32169d0",
-            "RoleDefinitionId": "/providers/Microsoft.Authorization/roleDefinitions/cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e",
+            "RoleDefinitionId": "cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e",
             "PrincipalIdDisplayName": "Partner Engineering Team"
           }
         ]
