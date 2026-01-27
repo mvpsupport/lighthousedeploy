@@ -1,0 +1,68 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "managedByTenantId": {
+      "type": "string",
+      "metadata": { "description": "Partner tenant ID (GUID) that will manage the customer subscription via Lighthouse." }
+    },
+    "offerName": {
+      "type": "string",
+      "defaultValue": "Partner Lighthouse Delegation",
+      "metadata": { "description": "Name shown to customer for this Lighthouse delegation." }
+    },
+    "offerDescription": {
+      "type": "string",
+      "defaultValue": "Delegated access via Azure Lighthouse",
+      "metadata": { "description": "Description shown to customer for this delegation." }
+    },
+    "authorizations": {
+      "type": "array",
+      "metadata": {
+        "description": "Array of authorization objects containing principalId, principalIdDisplayName, and roleDefinitionId."
+      }
+    },
+    "registrationDefinitionGuid": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": { "description": "GUID for the registration definition resource name." }
+    }
+  },
+  "variables": {
+    "registrationAssignmentName": "[guid(subscription().id, parameters('registrationDefinitionGuid'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ManagedServices/registrationDefinitions",
+      "apiVersion": "2022-09-01",
+      "name": "[parameters('registrationDefinitionGuid')]",
+      "properties": {
+        "registrationDefinitionName": "[parameters('offerName')]",
+        "description": "[parameters('offerDescription')]",
+        "managedByTenantId": "[parameters('managedByTenantId')]",
+        "authorizations": "[parameters('authorizations')]"
+      }
+    },
+    {
+      "type": "Microsoft.ManagedServices/registrationAssignments",
+      "apiVersion": "2022-09-01",
+      "name": "[variables('registrationAssignmentName')]",
+      "properties": {
+        "registrationDefinitionId": "[resourceId('Microsoft.ManagedServices/registrationDefinitions', parameters('registrationDefinitionGuid'))]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedServices/registrationDefinitions', parameters('registrationDefinitionGuid'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "registrationDefinitionId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ManagedServices/registrationDefinitions', parameters('registrationDefinitionGuid'))]"
+    },
+    "registrationAssignmentName": {
+      "type": "string",
+      "value": "[variables('registrationAssignmentName')]"
+    }
+  }
+}

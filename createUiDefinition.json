@@ -1,0 +1,230 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/uiDefinition.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "1.0.0",
+  "parameters": {
+    "basics": [
+      {
+        "name": "offerName",
+        "type": "Microsoft.Common.TextBox",
+        "label": "Delegation name",
+        "defaultValue": "Xcelocloud Lighthouse Delegation",
+        "constraints": {
+          "required": true,
+          "minLength": 3,
+          "maxLength": 64
+        }
+      },
+      {
+        "name": "offerDescription",
+        "type": "Microsoft.Common.TextBox",
+        "label": "Delegation description",
+        "defaultValue": "Delegated Azure management via Azure Lighthouse",
+        "constraints": {
+          "required": true,
+          "minLength": 3,
+          "maxLength": 256
+        }
+      }
+    ],
+    "steps": [
+      {
+        "name": "partnerInfo",
+        "label": "Partner information",
+        "elements": [
+          {
+            "name": "infoBox",
+            "type": "Microsoft.Common.InfoBox",
+            "options": {
+              "icon": "Info",
+              "text": "Azure Lighthouse enables cross-tenant management. You'll delegate access from this subscription to a partner tenant, allowing specified users or groups in the partner tenant to manage resources here."
+            }
+          },
+          {
+            "name": "managedByTenantId",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Partner tenant ID",
+            "placeholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+            "toolTip": "The Microsoft Entra tenant ID (Directory ID) for the managing partner organization. Find this in the Azure portal under Microsoft Entra ID > Overview.",
+            "constraints": {
+              "required": true,
+              "regex": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+              "validationMessage": "Enter a valid GUID in the format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+            }
+          }
+        ]
+      },
+      {
+        "name": "permissions",
+        "label": "Access & Permissions",
+        "elements": [
+          {
+            "name": "authorizationsSection",
+            "type": "Microsoft.Common.Section",
+            "label": "Define delegated access",
+            "elements": [
+              {
+                "name": "authorizationGrid",
+                "type": "Microsoft.Common.EditableGrid",
+                "label": "Authorizations",
+                "ariaLabel": "Configure which users or groups from the partner tenant receive access and what roles they are granted",
+                "constraints": {
+                  "width": "Full",
+                  "rows": {
+                    "count": {
+                      "min": 1,
+                      "max": 10
+                    }
+                  },
+                  "columns": [
+                    {
+                      "id": "principalId",
+                      "header": "Principal ID (Object ID)",
+                      "width": "2fr",
+                      "element": {
+                        "type": "Microsoft.Common.TextBox",
+                        "placeholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+                        "constraints": {
+                          "required": true,
+                          "regex": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                          "validationMessage": "Must be a valid GUID"
+                        }
+                      }
+                    },
+                    {
+                      "id": "principalIdDisplayName",
+                      "header": "Display Name",
+                      "width": "2fr",
+                      "element": {
+                        "type": "Microsoft.Common.TextBox",
+                        "placeholder": "e.g., IT Operations Team",
+                        "constraints": {
+                          "required": true,
+                          "minLength": 1,
+                          "maxLength": 128
+                        }
+                      }
+                    },
+                    {
+                      "id": "roleDefinitionId",
+                      "header": "Role",
+                      "width": "2fr",
+                      "element": {
+                        "type": "Microsoft.Common.DropDown",
+                        "placeholder": "Select a role",
+                        "constraints": {
+                          "required": true,
+                          "allowedValues": [
+                            {
+                              "label": "Reader",
+                              "value": "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
+                            },
+                            {
+                              "label": "Contributor",
+                              "value": "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                            },
+                            {
+                              "label": "Owner",
+                              "value": "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+                            },
+                            {
+                              "label": "Virtual Machine Contributor",
+                              "value": "/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c"
+                            },
+                            {
+                              "label": "Network Contributor",
+                              "value": "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
+                            },
+                            {
+                              "label": "Storage Account Contributor",
+                              "value": "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab"
+                            },
+                            {
+                              "label": "Backup Contributor",
+                              "value": "/providers/Microsoft.Authorization/roleDefinitions/5e467623-bb1f-42f4-a55d-6e525e11384b"
+                            },
+                            {
+                              "label": "Monitoring Contributor",
+                              "value": "/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa"
+                            },
+                            {
+                              "label": "Security Admin",
+                              "value": "/providers/Microsoft.Authorization/roleDefinitions/fb1c8493-542b-48eb-b624-b4c8fea62acd"
+                            },
+                            {
+                              "label": "Support Request Contributor",
+                              "value": "/providers/Microsoft.Authorization/roleDefinitions/cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "helpText",
+                "type": "Microsoft.Common.InfoBox",
+                "options": {
+                  "icon": "Info",
+                  "text": "Principal ID: Find Object IDs in the partner's Microsoft Entra ID for users, groups, or service principals. Navigate to Microsoft Entra ID > Users/Groups and copy the Object ID. Use groups for easier management."
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "review",
+        "label": "Review + Create",
+        "elements": [
+          {
+            "name": "reviewSection",
+            "type": "Microsoft.Common.Section",
+            "label": "Summary",
+            "elements": [
+              {
+                "name": "summaryInfo",
+                "type": "Microsoft.Common.InfoBox",
+                "options": {
+                  "icon": "Info",
+                  "text": "Review your Lighthouse delegation settings. Once deployed, the partner tenant will have access to manage resources in this subscription according to the roles you've assigned."
+                }
+              },
+              {
+                "name": "delegationName",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "[concat('Delegation: ', basics('offerName'))]"
+                }
+              },
+              {
+                "name": "tenantId",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "[concat('Partner Tenant: ', steps('partnerInfo').managedByTenantId)]"
+                }
+              },
+              {
+                "name": "authCount",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "[concat('Authorizations configured: ', string(length(steps('permissions').authorizationsSection.authorizationGrid)))]"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "offerName": "[basics('offerName')]",
+      "offerDescription": "[basics('offerDescription')]",
+      "managedByTenantId": "[steps('partnerInfo').managedByTenantId]",
+      "authorizations": "[steps('permissions').authorizationsSection.authorizationGrid]"
+    }
+  }
+}
