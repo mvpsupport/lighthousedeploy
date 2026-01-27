@@ -75,110 +75,36 @@
           {
             "name": "authorizationsSection",
             "type": "Microsoft.Common.Section",
-            "label": "Select roles for partner access",
+            "label": "Pre-configured partner access",
             "elements": [
               {
                 "name": "authorizationInfo",
                 "type": "Microsoft.Common.InfoBox",
                 "options": {
                   "icon": "Info",
-                  "text": "The partner groups listed below are pre-configured. You can select which Azure role each group should receive for managing your subscription."
+                  "text": "This delegation grants Support Request Contributor access to two partner groups for managing support tickets and requests in your subscription."
                 }
               },
               {
-                "name": "supportTeamLabel",
+                "name": "auth1Text",
                 "type": "Microsoft.Common.TextBlock",
                 "options": {
-                  "text": "Partner Support Team",
-                  "style": "Bold"
+                  "text": "• Partner Support Team - Support Request Contributor"
                 }
               },
               {
-                "name": "supportTeamRole",
-                "type": "Microsoft.Common.DropDown",
-                "label": "Role for Partner Support Team",
-                "toolTip": "Select the Azure RBAC role to grant to the Partner Support Team",
-                "defaultValue": "Support Request Contributor",
-                "constraints": {
-                  "required": true,
-                  "allowedValues": [
-                    {
-                      "label": "Support Request Contributor",
-                      "value": "/providers/Microsoft.Authorization/roleDefinitions/cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e"
-                    },
-                    {
-                      "label": "Reader",
-                      "value": "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
-                    },
-                    {
-                      "label": "Contributor",
-                      "value": "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
-                    },
-                    {
-                      "label": "Monitoring Contributor",
-                      "value": "/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "engineeringTeamLabel",
+                "name": "auth2Text",
                 "type": "Microsoft.Common.TextBlock",
                 "options": {
-                  "text": "Partner Engineering Team",
-                  "style": "Bold"
+                  "text": "• Partner Engineering Team - Support Request Contributor"
                 }
               },
               {
-                "name": "engineeringTeamRole",
-                "type": "Microsoft.Common.DropDown",
-                "label": "Role for Partner Engineering Team",
-                "toolTip": "Select the Azure RBAC role to grant to the Partner Engineering Team",
-                "defaultValue": "Support Request Contributor",
-                "constraints": {
-                  "required": true,
-                  "allowedValues": [
-                    {
-                      "label": "Support Request Contributor",
-                      "value": "/providers/Microsoft.Authorization/roleDefinitions/cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e"
-                    },
-                    {
-                      "label": "Reader",
-                      "value": "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
-                    },
-                    {
-                      "label": "Contributor",
-                      "value": "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
-                    },
-                    {
-                      "label": "Owner",
-                      "value": "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
-                    },
-                    {
-                      "label": "Virtual Machine Contributor",
-                      "value": "/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c"
-                    },
-                    {
-                      "label": "Network Contributor",
-                      "value": "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
-                    },
-                    {
-                      "label": "Storage Account Contributor",
-                      "value": "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab"
-                    },
-                    {
-                      "label": "Backup Contributor",
-                      "value": "/providers/Microsoft.Authorization/roleDefinitions/5e467623-bb1f-42f4-a55d-6e525e11384b"
-                    },
-                    {
-                      "label": "Monitoring Contributor",
-                      "value": "/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa"
-                    },
-                    {
-                      "label": "Security Admin",
-                      "value": "/providers/Microsoft.Authorization/roleDefinitions/fb1c8493-542b-48eb-b624-b4c8fea62acd"
-                    }
-                  ]
+                "name": "roleInfo",
+                "type": "Microsoft.Common.InfoBox",
+                "options": {
+                  "icon": "Info",
+                  "text": "Support Request Contributor role allows the partner to create and manage support tickets but does not grant access to modify your Azure resources."
                 }
               }
             ]
@@ -231,7 +157,7 @@
                 "type": "Microsoft.Common.TextBlock",
                 "visible": true,
                 "options": {
-                  "text": "[concat('  • Partner Support Team: ', steps('permissions').authorizationsSection.supportTeamRole.label)]"
+                  "text": "  • Partner Support Team: Support Request Contributor"
                 }
               },
               {
@@ -239,7 +165,7 @@
                 "type": "Microsoft.Common.TextBlock",
                 "visible": true,
                 "options": {
-                  "text": "[concat('  • Partner Engineering Team: ', steps('permissions').authorizationsSection.engineeringTeamRole.label)]"
+                  "text": "  • Partner Engineering Team: Support Request Contributor"
                 }
               }
             ]
@@ -250,9 +176,7 @@
     "outputs": {
       "offerName": "[basics('offerName')]",
       "offerDescription": "[basics('offerDescription')]",
-      "managedByTenantId": "fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1",
-      "supportTeamRole": "[steps('permissions').authorizationsSection.supportTeamRole]",
-      "engineeringTeamRole": "[steps('permissions').authorizationsSection.engineeringTeamRole]"
+      "managedByTenantId": "fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1"
     }
   }
 }
