@@ -16,11 +16,13 @@
       "defaultValue": "Delegated access via Azure Lighthouse",
       "metadata": { "description": "Description shown to customer for this delegation." }
     },
-    "authorizations": {
-      "type": "array",
-      "metadata": {
-        "description": "Array of authorization objects containing principalId, principalIdDisplayName, and roleDefinitionId."
-      }
+    "supportTeamRole": {
+      "type": "string",
+      "metadata": { "description": "Role definition ID for Partner Support Team." }
+    },
+    "engineeringTeamRole": {
+      "type": "string",
+      "metadata": { "description": "Role definition ID for Partner Engineering Team." }
     },
     "registrationDefinitionGuid": {
       "type": "string",
@@ -29,7 +31,19 @@
     }
   },
   "variables": {
-    "registrationAssignmentName": "[guid(subscription().id, parameters('registrationDefinitionGuid'))]"
+    "registrationAssignmentName": "[guid(subscription().id, parameters('registrationDefinitionGuid'))]",
+    "authorizations": [
+      {
+        "principalId": "ac16bf33-cebb-44ea-b8d2-30650cf35bd2",
+        "principalIdDisplayName": "Partner Support Team",
+        "roleDefinitionId": "[parameters('supportTeamRole')]"
+      },
+      {
+        "principalId": "3a829362-01c3-4bda-b6a2-fcbbb32169d0",
+        "principalIdDisplayName": "Partner Engineering Team",
+        "roleDefinitionId": "[parameters('engineeringTeamRole')]"
+      }
+    ]
   },
   "resources": [
     {
@@ -40,7 +54,7 @@
         "registrationDefinitionName": "[parameters('offerName')]",
         "description": "[parameters('offerDescription')]",
         "managedByTenantId": "[parameters('managedByTenantId')]",
-        "authorizations": "[parameters('authorizations')]"
+        "authorizations": "[variables('authorizations')]"
       }
     },
     {

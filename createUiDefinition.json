@@ -251,7 +251,8 @@
       "offerName": "[basics('offerName')]",
       "offerDescription": "[basics('offerDescription')]",
       "managedByTenantId": "fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1",
-      "authorizations": "[parse(concat('[{\"principalId\":\"ac16bf33-cebb-44ea-b8d2-30650cf35bd2\",\"principalIdDisplayName\":\"Partner Support Team\",\"roleDefinitionId\":\"', steps('permissions').authorizationsSection.supportTeamRole, '\"},{\"principalId\":\"3a829362-01c3-4bda-b6a2-fcbbb32169d0\",\"principalIdDisplayName\":\"Partner Engineering Team\",\"roleDefinitionId\":\"', steps('permissions').authorizationsSection.engineeringTeamRole, '\"}]'))]"
+      "supportTeamRole": "[steps('permissions').authorizationsSection.supportTeamRole]",
+      "engineeringTeamRole": "[steps('permissions').authorizationsSection.engineeringTeamRole]"
     }
   }
 }
