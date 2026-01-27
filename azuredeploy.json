@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "managedByTenantId": {
@@ -28,7 +28,7 @@
   "resources": [
     {
       "type": "Microsoft.ManagedServices/registrationDefinitions",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2019-06-01",
       "name": "[parameters('registrationDefinitionGuid')]",
       "properties": {
         "registrationDefinitionName": "[parameters('offerName')]",
@@ -50,7 +50,7 @@
     },
     {
       "type": "Microsoft.ManagedServices/registrationAssignments",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2019-06-01",
       "name": "[variables('registrationAssignmentName')]",
       "properties": {
         "registrationDefinitionId": "[resourceId('Microsoft.ManagedServices/registrationDefinitions', parameters('registrationDefinitionGuid'))]"
