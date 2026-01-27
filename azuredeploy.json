@@ -34,7 +34,7 @@
   "resources": [
     {
       "type": "Microsoft.ManagedServices/registrationDefinitions",
-      "apiVersion": "2018-06-01-preview",
+      "apiVersion": "2022-10-01",
       "name": "[parameters('registrationDefinitionGuid')]",
       "properties": {
         "registrationDefinitionName": "[parameters('offerName')]",
@@ -45,7 +45,7 @@
     },
     {
       "type": "Microsoft.ManagedServices/registrationAssignments",
-      "apiVersion": "2018-06-01-preview",
+      "apiVersion": "2022-10-01",
       "name": "[variables('registrationAssignmentName')]",
       "properties": {
         "registrationDefinitionId": "[resourceId('Microsoft.ManagedServices/registrationDefinitions', parameters('registrationDefinitionGuid'))]"
