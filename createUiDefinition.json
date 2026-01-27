@@ -41,15 +41,29 @@
             }
           },
           {
-            "name": "managedByTenantId",
-            "type": "Microsoft.Common.TextBox",
-            "label": "Partner tenant ID",
-            "placeholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-            "toolTip": "The Microsoft Entra tenant ID (Directory ID) for the managing partner organization. Find this in the Azure portal under Microsoft Entra ID > Overview.",
-            "constraints": {
-              "required": true,
-              "regex": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
-              "validationMessage": "Enter a valid GUID in the format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+            "name": "tenantIdLabel",
+            "type": "Microsoft.Common.TextBlock",
+            "options": {
+              "text": "Partner Tenant ID"
+            }
+          },
+          {
+            "name": "managedByTenantIdDisplay",
+            "type": "Microsoft.Common.TextBlock",
+            "options": {
+              "text": "fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1",
+              "link": {
+                "label": "",
+                "uri": ""
+              }
+            }
+          },
+          {
+            "name": "tenantIdNote",
+            "type": "Microsoft.Common.InfoBox",
+            "options": {
+              "icon": "Info",
+              "text": "This delegation is pre-configured for the partner tenant shown above. If you need to delegate to a different partner, please contact your service provider."
             }
           }
         ]
@@ -61,113 +75,110 @@
           {
             "name": "authorizationsSection",
             "type": "Microsoft.Common.Section",
-            "label": "Define delegated access",
+            "label": "Select roles for partner access",
             "elements": [
               {
-                "name": "authorizationGrid",
-                "type": "Microsoft.Common.EditableGrid",
-                "label": "Authorizations",
-                "ariaLabel": "Configure which users or groups from the partner tenant receive access and what roles they are granted",
+                "name": "authorizationInfo",
+                "type": "Microsoft.Common.InfoBox",
+                "options": {
+                  "icon": "Info",
+                  "text": "The partner groups listed below are pre-configured. You can select which Azure role each group should receive for managing your subscription."
+                }
+              },
+              {
+                "name": "supportTeamLabel",
+                "type": "Microsoft.Common.TextBlock",
+                "options": {
+                  "text": "Partner Support Team",
+                  "style": "Bold"
+                }
+              },
+              {
+                "name": "supportTeamRole",
+                "type": "Microsoft.Common.DropDown",
+                "label": "Role for Partner Support Team",
+                "toolTip": "Select the Azure RBAC role to grant to the Partner Support Team",
+                "defaultValue": "Support Request Contributor",
                 "constraints": {
-                  "width": "Full",
-                  "rows": {
-                    "count": {
-                      "min": 1,
-                      "max": 10
-                    }
-                  },
-                  "columns": [
+                  "required": true,
+                  "allowedValues": [
                     {
-                      "id": "principalId",
-                      "header": "Principal ID (Object ID)",
-                      "width": "2fr",
-                      "element": {
-                        "type": "Microsoft.Common.TextBox",
-                        "placeholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-                        "constraints": {
-                          "required": true,
-                          "regex": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
-                          "validationMessage": "Must be a valid GUID"
-                        }
-                      }
+                      "label": "Support Request Contributor",
+                      "value": "/providers/Microsoft.Authorization/roleDefinitions/cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e"
                     },
                     {
-                      "id": "principalIdDisplayName",
-                      "header": "Display Name",
-                      "width": "2fr",
-                      "element": {
-                        "type": "Microsoft.Common.TextBox",
-                        "placeholder": "e.g., IT Operations Team",
-                        "constraints": {
-                          "required": true,
-                          "minLength": 1,
-                          "maxLength": 128
-                        }
-                      }
+                      "label": "Reader",
+                      "value": "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
                     },
                     {
-                      "id": "roleDefinitionId",
-                      "header": "Role",
-                      "width": "2fr",
-                      "element": {
-                        "type": "Microsoft.Common.DropDown",
-                        "placeholder": "Select a role",
-                        "constraints": {
-                          "required": true,
-                          "allowedValues": [
-                            {
-                              "label": "Reader",
-                              "value": "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
-                            },
-                            {
-                              "label": "Contributor",
-                              "value": "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
-                            },
-                            {
-                              "label": "Owner",
-                              "value": "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
-                            },
-                            {
-                              "label": "Virtual Machine Contributor",
-                              "value": "/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c"
-                            },
-                            {
-                              "label": "Network Contributor",
-                              "value": "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
-                            },
-                            {
-                              "label": "Storage Account Contributor",
-                              "value": "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab"
-                            },
-                            {
-                              "label": "Backup Contributor",
-                              "value": "/providers/Microsoft.Authorization/roleDefinitions/5e467623-bb1f-42f4-a55d-6e525e11384b"
-                            },
-                            {
-                              "label": "Monitoring Contributor",
-                              "value": "/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa"
-                            },
-                            {
-                              "label": "Security Admin",
-                              "value": "/providers/Microsoft.Authorization/roleDefinitions/fb1c8493-542b-48eb-b624-b4c8fea62acd"
-                            },
-                            {
-                              "label": "Support Request Contributor",
-                              "value": "/providers/Microsoft.Authorization/roleDefinitions/cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e"
-                            }
-                          ]
-                        }
-                      }
+                      "label": "Contributor",
+                      "value": "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                    },
+                    {
+                      "label": "Monitoring Contributor",
+                      "value": "/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa"
                     }
                   ]
                 }
               },
               {
-                "name": "helpText",
-                "type": "Microsoft.Common.InfoBox",
+                "name": "engineeringTeamLabel",
+                "type": "Microsoft.Common.TextBlock",
                 "options": {
-                  "icon": "Info",
-                  "text": "Principal ID: Find Object IDs in the partner's Microsoft Entra ID for users, groups, or service principals. Navigate to Microsoft Entra ID > Users/Groups and copy the Object ID. Use groups for easier management."
+                  "text": "Partner Engineering Team",
+                  "style": "Bold"
+                }
+              },
+              {
+                "name": "engineeringTeamRole",
+                "type": "Microsoft.Common.DropDown",
+                "label": "Role for Partner Engineering Team",
+                "toolTip": "Select the Azure RBAC role to grant to the Partner Engineering Team",
+                "defaultValue": "Support Request Contributor",
+                "constraints": {
+                  "required": true,
+                  "allowedValues": [
+                    {
+                      "label": "Support Request Contributor",
+                      "value": "/providers/Microsoft.Authorization/roleDefinitions/cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e"
+                    },
+                    {
+                      "label": "Reader",
+                      "value": "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
+                    },
+                    {
+                      "label": "Contributor",
+                      "value": "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                    },
+                    {
+                      "label": "Owner",
+                      "value": "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+                    },
+                    {
+                      "label": "Virtual Machine Contributor",
+                      "value": "/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c"
+                    },
+                    {
+                      "label": "Network Contributor",
+                      "value": "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
+                    },
+                    {
+                      "label": "Storage Account Contributor",
+                      "value": "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab"
+                    },
+                    {
+                      "label": "Backup Contributor",
+                      "value": "/providers/Microsoft.Authorization/roleDefinitions/5e467623-bb1f-42f4-a55d-6e525e11384b"
+                    },
+                    {
+                      "label": "Monitoring Contributor",
+                      "value": "/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa"
+                    },
+                    {
+                      "label": "Security Admin",
+                      "value": "/providers/Microsoft.Authorization/roleDefinitions/fb1c8493-542b-48eb-b624-b4c8fea62acd"
+                    }
+                  ]
                 }
               }
             ]
@@ -204,7 +215,7 @@
                 "type": "Microsoft.Common.TextBlock",
                 "visible": true,
                 "options": {
-                  "text": "[concat('Partner Tenant: ', steps('partnerInfo').managedByTenantId)]"
+                  "text": "Partner Tenant: fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1"
                 }
               },
               {
@@ -212,7 +223,23 @@
                 "type": "Microsoft.Common.TextBlock",
                 "visible": true,
                 "options": {
-                  "text": "[concat('Authorizations configured: ', string(length(steps('permissions').authorizationsSection.authorizationGrid)))]"
+                  "text": "Authorizations configured: 2"
+                }
+              },
+              {
+                "name": "auth1",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "[concat('  • Partner Support Team: ', steps('permissions').authorizationsSection.supportTeamRole.label)]"
+                }
+              },
+              {
+                "name": "auth2",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "[concat('  • Partner Engineering Team: ', steps('permissions').authorizationsSection.engineeringTeamRole.label)]"
                 }
               }
             ]
@@ -223,8 +250,19 @@
     "outputs": {
       "offerName": "[basics('offerName')]",
       "offerDescription": "[basics('offerDescription')]",
-      "managedByTenantId": "[steps('partnerInfo').managedByTenantId]",
-      "authorizations": "[steps('permissions').authorizationsSection.authorizationGrid]"
+      "managedByTenantId": "fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1",
+      "authorizations": [
+        {
+          "principalId": "ac16bf33-cebb-44ea-b8d2-30650cf35bd2",
+          "principalIdDisplayName": "Partner Support Team",
+          "roleDefinitionId": "[steps('permissions').authorizationsSection.supportTeamRole]"
+        },
+        {
+          "principalId": "3a829362-01c3-4bda-b6a2-fcbbb32169d0",
+          "principalIdDisplayName": "Partner Engineering Team",
+          "roleDefinitionId": "[steps('permissions').authorizationsSection.engineeringTeamRole]"
+        }
+      ]
     }
   }
 }
