@@ -89,14 +89,14 @@
                 "name": "auth1Text",
                 "type": "Microsoft.Common.TextBlock",
                 "options": {
-                  "text": "• Partner Support Team - Support Request Contributor"
+                  "text": "• Helpdesk Support - Support Request Contributor"
                 }
               },
               {
                 "name": "auth2Text",
                 "type": "Microsoft.Common.TextBlock",
                 "options": {
-                  "text": "• Partner Engineering Team - Support Request Contributor"
+                  "text": "• Partner Admin - Support Request Contributor"
                 }
               },
               {
@@ -157,7 +157,7 @@
                 "type": "Microsoft.Common.TextBlock",
                 "visible": true,
                 "options": {
-                  "text": "  • Partner Support Team: Support Request Contributor"
+                  "text": "  • Helpdesk Support: Support Request Contributor"
                 }
               },
               {
@@ -165,7 +165,7 @@
                 "type": "Microsoft.Common.TextBlock",
                 "visible": true,
                 "options": {
-                  "text": "  • Partner Engineering Team: Support Request Contributor"
+                  "text": "  • Partner Admin: Support Request Contributor"
                 }
               }
             ]
@@ -174,9 +174,26 @@
       }
     ],
     "outputs": {
-      "offerName": "[basics('offerName')]",
-      "offerDescription": "[basics('offerDescription')]",
-      "managedByTenantId": "fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1"
+      "mspOfferName": "[basics('offerName')]",
+      "mspOfferDescription": "[basics('offerDescription')]",
+      "managedByTenantId": "fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1",
+      "authorizations": [
+        {
+          "principalId": "ac16bf33-cebb-44ea-b8d2-30650cf35bd2",
+          "roleDefinitionId": "cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e",
+          "principalIdDisplayName": "Helpdesk Support"
+        },
+        {
+          "principalId": "3a829362-01c3-4bda-b6a2-fcbbb32169d0",
+          "roleDefinitionId": "cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e",
+          "principalIdDisplayName": "Partner Admin"
+        }
+      ],
+      "marketplaceOffer": "No",
+      "marketplacePublisherId": "marketplace-test",
+      "marketplaceOfferId": "xc-partner-support-offering",
+      "marketplacePlanId": "xcpartner",
+      "marketplacePlanVersion": "2.0.0"
     }
   }
 }
