@@ -79,6 +79,7 @@
     "variables": {
         "mspRegistrationName": "[guid(parameters('mspOfferName'))]",
         "mspAssignmentName": "[guid(parameters('mspOfferName'))]",
+        "conditionalAccessPolicyId": "[guid(parameters('conditionalAccessPolicyName'))]",
         "marketplacePlan": {
             "name": "[parameters('marketplacePlanId')]",
             "product": "[parameters('marketplaceOfferId')]",

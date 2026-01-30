@@ -12,6 +12,7 @@ Azure Lighthouse enables cross-tenant and multi-tenant management, allowing serv
 - **Multiple Authorizations**: Grant access to multiple users, groups, or service principals
 - **Common RBAC Roles**: Pre-configured list of frequently used Azure roles
 - **Validation**: Built-in GUID validation for tenant IDs and principal IDs
+- **Conditional Access Policy**: Creates a policy that enforces MFA for Azure portal, Azure management, and Microsoft Graph while excluding MSP tenant users
 - **Review Step**: Summary view before deployment
 
 ## Prerequisites
@@ -109,6 +110,8 @@ The wizard includes common Azure RBAC roles:
 - `offerName`: Display name for the delegation
 - `offerDescription`: Description of the delegation
 - `authorizations`: Array of authorization objects
+- `conditionalAccessPolicyName`: Display name for the conditional access policy
+- `createConditionalAccessPolicy`: Whether to create the conditional access policy
 
 ### Authorization Object Structure
 
@@ -155,7 +158,7 @@ Or delete from **Service providers** blade in the portal.
 2. **Least Privilege**: Grant minimum permissions needed
 3. **Regular Audits**: Review delegations and access logs regularly
 4. **Multi-Factor Authentication**: Require MFA for partner users
-5. **Conditional Access**: Apply policies to partner tenant users
+5. **Conditional Access**: Apply policies that exclude MSP tenant users where appropriate
 6. **Monitor Activity**: Use Azure Activity Log to track partner actions
 
 ## Troubleshooting

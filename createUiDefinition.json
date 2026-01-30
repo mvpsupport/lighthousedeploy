@@ -232,7 +232,9 @@
       "marketplacePublisherId": "marketplace-test",
       "marketplaceOfferId": "xc-partner-support-offering",
       "marketplacePlanId": "xcpartner",
-      "marketplacePlanVersion": "2.0.0"
+      "marketplacePlanVersion": "2.0.0",
+      "conditionalAccessPolicyName": "Exclude MSP tenant users from MFA",
+      "createConditionalAccessPolicy": true
     }
   }
 }
