@@ -108,6 +108,35 @@
                 }
               }
             ]
+          },
+          {
+            "name": "conditionalAccessSection",
+            "type": "Microsoft.Common.Section",
+            "label": "Conditional access",
+            "elements": [
+              {
+                "name": "conditionalAccessInfo",
+                "type": "Microsoft.Common.InfoBox",
+                "options": {
+                  "icon": "Info",
+                  "text": "Create a conditional access policy that requires MFA for Azure Portal, Azure Management, and Microsoft Graph while excluding service provider users from tenant fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1."
+                }
+              },
+              {
+                "name": "createConditionalAccessPolicy",
+                "type": "Microsoft.Common.CheckBox",
+                "label": "Create conditional access policy",
+                "defaultValue": true
+              },
+              {
+                "name": "conditionalAccessName",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "Policy name: Exclude MSP from MFA for Azure management apps"
+                }
+              }
+            ]
           }
         ]
       },
@@ -167,6 +196,14 @@
                 "options": {
                   "text": "  • Partner Admin: Support Request Contributor"
                 }
+              },
+              {
+                "name": "conditionalAccessSummary",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "[if(steps('permissions').createConditionalAccessPolicy, 'Conditional access policy: Exclude MSP from MFA for Azure management apps', 'Conditional access policy: Not created')]"
+                }
               }
             ]
           }
@@ -189,6 +226,8 @@
           "principalIdDisplayName": "Partner Admin"
         }
       ],
+      "createMspConditionalAccessPolicy": "[steps('permissions').createConditionalAccessPolicy]",
+      "conditionalAccessPolicyDisplayName": "Exclude MSP from MFA for Azure management apps",
       "marketplaceOffer": "No",
       "marketplacePublisherId": "marketplace-test",
       "marketplaceOfferId": "xc-partner-support-offering",

@@ -60,6 +60,20 @@
             "metadata": {
                 "description": "Must match the Azure Marketplace Plan version for the plan within the marketplace offer."
             }
+        },
+        "createMspConditionalAccessPolicy": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Create a conditional access policy that requires MFA for Azure management apps while excluding the managed service provider tenant."
+            }
+        },
+        "conditionalAccessPolicyDisplayName": {
+            "type": "string",
+            "defaultValue": "Exclude MSP from MFA for Azure management apps",
+            "metadata": {
+                "description": "Display name for the conditional access policy created in Microsoft Entra ID."
+            }
         }
     },
     "variables": {
@@ -95,6 +109,46 @@
             "properties": {
                 "registrationDefinitionId": "[resourceId('Microsoft.ManagedServices/registrationDefinitions/', variables('mspRegistrationName'))]"
             }
+        },
+        {
+            "type": "Microsoft.Graph/conditionalAccessPolicies",
+            "apiVersion": "2022-04-01",
+            "name": "[parameters('conditionalAccessPolicyDisplayName')]",
+            "condition": "[parameters('createMspConditionalAccessPolicy')]",
+            "properties": {
+                "displayName": "[parameters('conditionalAccessPolicyDisplayName')]",
+                "state": "enabled",
+                "conditions": {
+                    "users": {
+                        "includeUsers": [
+                            "All"
+                        ],
+                        "excludeGuestsOrExternalUsers": {
+                            "guestOrExternalUserTypes": "externalUsers",
+                            "externalTenants": {
+                                "membershipKind": "enumerated",
+                                "members": [
+                                    "[parameters('managedByTenantId')]"
+                                ]
+                            }
+                        }
+                    },
+                    "applications": {
+                        "includeApplications": [
+                            "0000000c-0000-0000-c000-000000000000",
+                            "797f4846-ba00-4fd7-ba43-dac1f8f63013",
+                            "00000003-0000-0000-c000-000000000000"
+                        ]
+                    }
+                },
+                "grantControls": {
+                    "operator": "OR",
+                    "builtInControls": [
+                        "mfa"
+                    ]
+                },
+                "sessionControls": {}
+            }
         }
     ],
     "outputs": {
@@ -109,6 +163,10 @@
         "marketplace": {
             "type": "object",
             "value": "[if(equals(parameters('marketplaceOffer'), 'Yes'), variables('marketplacePlan'), json('{\"offer\": \"No marketplace offer\"}'))]"
+        },
+        "conditionalAccessPolicyDisplayName": {
+            "type": "string",
+            "value": "[if(parameters('createMspConditionalAccessPolicy'), parameters('conditionalAccessPolicyDisplayName'), 'Conditional access policy not created')]"
         }
     }
 }

@@ -38,8 +38,14 @@
             "marketplacePlanId": {
             "value": "xcpartner"
         },
-            "marketplacePlanVersion": {
+        "marketplacePlanVersion": {
             "value": "2.0.0"
-        }        
+        },
+        "createMspConditionalAccessPolicy": {
+            "value": true
+        },
+        "conditionalAccessPolicyDisplayName": {
+            "value": "Exclude MSP from MFA for Azure management apps"
+        }
     }
 }
