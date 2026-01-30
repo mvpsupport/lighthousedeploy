@@ -51,11 +51,7 @@
             "name": "managedByTenantIdDisplay",
             "type": "Microsoft.Common.TextBlock",
             "options": {
-              "text": "fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1",
-              "link": {
-                "label": "",
-                "uri": ""
-              }
+              "text": "fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1"
             }
           },
           {
@@ -104,7 +100,7 @@
                 "type": "Microsoft.Common.InfoBox",
                 "options": {
                   "icon": "Info",
-                  "text": "Support Request Contributor role allows the partner to create and manage support tickets but does not grant access to modify your Azure resources."
+                  "text": "Support Request Contributor allows the partner to create and manage support tickets but does not grant access to modify Azure resources."
                 }
               }
             ]
@@ -115,35 +111,21 @@
             "label": "Conditional Access policy",
             "elements": [
               {
+                "name": "conditionalAccessInfo",
+                "type": "Microsoft.Common.InfoBox",
+                "options": {
+                  "icon": "Info",
+                  "text": "If enabled, your deployment can trigger an automation step to create a Conditional Access policy requiring MFA for Azure Portal, Azure management, and Microsoft Graph. This UI only captures the intent; the actual policy must be created by your template/automation."
+                }
+              },
+              {
                 "name": "createConditionalAccessPolicy",
                 "type": "Microsoft.Common.CheckBox",
                 "label": "Create Conditional Access policy to require MFA",
                 "defaultValue": true,
                 "options": {
-                  "description": "When enabled, a Conditional Access policy will require MFA for Azure portal, Azure management, and Microsoft Graph while excluding users from the MSP tenant (fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1). Session controls will be left as none."
+                  "description": "When enabled, downstream deployment automation can create an MFA-required policy for Azure management apps. Session controls will be left as none."
                 }
-              },
-              {
-                "name": "conditionalAccessInfo",
-                "type": "Microsoft.Common.InfoBox",
-                "options": {
-                  "icon": "Info",
-                  "text": "If enabled, the Conditional Access policy will require MFA for Azure portal, Azure management, and Microsoft Graph while excluding users from the MSP tenant (fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1). Session controls will be left as none."
-            "label": "Conditional access",
-            "elements": [
-              {
-                "name": "conditionalAccessInfo",
-                "type": "Microsoft.Common.InfoBox",
-                "options": {
-                  "icon": "Info",
-                  "text": "Create a conditional access policy that requires MFA for Azure Portal, Azure Management, and Microsoft Graph while excluding service provider users from tenant fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1."
-                }
-              },
-              {
-                "name": "createConditionalAccessPolicy",
-                "type": "Microsoft.Common.CheckBox",
-                "label": "Create conditional access policy",
-                "defaultValue": true
               },
               {
                 "name": "conditionalAccessName",
@@ -171,7 +153,7 @@
                 "type": "Microsoft.Common.InfoBox",
                 "options": {
                   "icon": "Info",
-                  "text": "Review your Lighthouse delegation settings. Once deployed, the partner tenant will have access to manage resources in this subscription according to the roles you've assigned."
+                  "text": "Review your Lighthouse delegation settings. Once deployed, the partner tenant will have access according to the roles assigned."
                 }
               },
               {
@@ -215,16 +197,11 @@
                 }
               },
               {
-                "name": "caSummary",
-                "type": "Microsoft.Common.TextBlock",
-                "visible": true,
-                "options": {
-                  "text": "Conditional Access: MFA required for Azure portal, Azure management, and Microsoft Graph (MSP tenant excluded)"
                 "name": "conditionalAccessSummary",
                 "type": "Microsoft.Common.TextBlock",
                 "visible": true,
                 "options": {
-                  "text": "[if(steps('permissions').createConditionalAccessPolicy, 'Conditional access policy: Exclude MSP from MFA for Azure management apps', 'Conditional access policy: Not created')]"
+                  "text": "[if(steps('permissions').createConditionalAccessPolicy, 'Conditional Access: Requested (automation will create MFA policy for Azure management apps)', 'Conditional Access: Not requested')]"
                 }
               }
             ]
@@ -248,15 +225,13 @@
           "principalIdDisplayName": "Partner Admin"
         }
       ],
-      "createMspConditionalAccessPolicy": "[steps('permissions').createConditionalAccessPolicy]",
+      "createConditionalAccessPolicy": "[steps('permissions').createConditionalAccessPolicy]",
       "conditionalAccessPolicyDisplayName": "Exclude MSP from MFA for Azure management apps",
       "marketplaceOffer": "No",
       "marketplacePublisherId": "marketplace-test",
       "marketplaceOfferId": "xc-partner-support-offering",
       "marketplacePlanId": "xcpartner",
-      "marketplacePlanVersion": "2.0.0",
-      "conditionalAccessPolicyName": "Exclude MSP tenant users from MFA",
-      "createConditionalAccessPolicy": "[steps('permissions').createConditionalAccessPolicy]"
+      "marketplacePlanVersion": "2.0.0"
     }
   }
 }
