@@ -201,7 +201,7 @@
                 "type": "Microsoft.Common.TextBlock",
                 "visible": true,
                 "options": {
-                  "text": "[if(steps('permissions').createConditionalAccessPolicy, 'Conditional Access: Requested (automation will create MFA policy for Azure management apps)', 'Conditional Access: Not requested')]"
+                  "text": "[if(steps('permissions').conditionalAccessSection.createConditionalAccessPolicy, 'Conditional Access: Requested (automation will create MFA policy for Azure management apps)', 'Conditional Access: Not requested')]"
                 }
               }
             ]
@@ -225,7 +225,7 @@
           "principalIdDisplayName": "Partner Admin"
         }
       ],
-      "createConditionalAccessPolicy": "[steps('permissions').createConditionalAccessPolicy]",
+      "createConditionalAccessPolicy": "[steps('permissions').conditionalAccessSection.createConditionalAccessPolicy]",
       "conditionalAccessPolicyDisplayName": "Exclude MSP from MFA for Azure management apps",
       "marketplaceOffer": "No",
       "marketplacePublisherId": "marketplace-test",
