@@ -46,6 +46,11 @@
         },
         "createConditionalAccessPolicy": {
             "value": true
+        "createMspConditionalAccessPolicy": {
+            "value": true
+        },
+        "conditionalAccessPolicyDisplayName": {
+            "value": "Exclude MSP from MFA for Azure management apps"
         }
     }
 }

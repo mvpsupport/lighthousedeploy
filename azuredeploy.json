@@ -73,6 +73,18 @@
             "defaultValue": true,
             "metadata": {
                 "description": "Whether to create the conditional access policy to exclude MSP tenant users from MFA."
+        "createMspConditionalAccessPolicy": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Create a conditional access policy that requires MFA for Azure management apps while excluding the managed service provider tenant."
+            }
+        },
+        "conditionalAccessPolicyDisplayName": {
+            "type": "string",
+            "defaultValue": "Exclude MSP from MFA for Azure management apps",
+            "metadata": {
+                "description": "Display name for the conditional access policy created in Microsoft Entra ID."
             }
         }
     },
@@ -119,6 +131,12 @@
             "scope": "/",
             "properties": {
                 "displayName": "[parameters('conditionalAccessPolicyName')]",
+            "type": "Microsoft.Graph/conditionalAccessPolicies",
+            "apiVersion": "2022-04-01",
+            "name": "[parameters('conditionalAccessPolicyDisplayName')]",
+            "condition": "[parameters('createMspConditionalAccessPolicy')]",
+            "properties": {
+                "displayName": "[parameters('conditionalAccessPolicyDisplayName')]",
                 "state": "enabled",
                 "conditions": {
                     "users": {
@@ -173,6 +191,9 @@
         "conditionalAccessPolicyEnabled": {
             "type": "bool",
             "value": "[parameters('createConditionalAccessPolicy')]"
+        "conditionalAccessPolicyDisplayName": {
+            "type": "string",
+            "value": "[if(parameters('createMspConditionalAccessPolicy'), parameters('conditionalAccessPolicyDisplayName'), 'Conditional access policy not created')]"
         }
     }
 }
