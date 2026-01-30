@@ -130,12 +130,6 @@
             "name": "[variables('conditionalAccessPolicyId')]",
             "scope": "/",
             "properties": {
-                "displayName": "[parameters('conditionalAccessPolicyName')]",
-            "type": "Microsoft.Graph/conditionalAccessPolicies",
-            "apiVersion": "2022-04-01",
-            "name": "[parameters('conditionalAccessPolicyDisplayName')]",
-            "condition": "[parameters('createMspConditionalAccessPolicy')]",
-            "properties": {
                 "displayName": "[parameters('conditionalAccessPolicyDisplayName')]",
                 "state": "enabled",
                 "conditions": {
