@@ -1,56 +1,50 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "mspOfferName": {
-            "value": "Partner Lighthouse Delegation"
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "mspOfferName": {
+      "value": "Partner Lighthouse Delegation"
+    },
+    "mspOfferDescription": {
+      "value": "Delegated Azure management via Azure Lighthouse"
+    },
+    "managedByTenantId": {
+      "value": "fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1"
+    },
+    "authorizations": {
+      "value": [
+        {
+          "principalId": "ac16bf33-cebb-44ea-b8d2-30650cf35bd2",
+          "roleDefinitionId": "cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e",
+          "principalIdDisplayName": "Helpdesk Support"
         },
-        "mspOfferDescription": {
-            "value": "Delegated Azure management via Azure Lighthouse"
-        },
-        "managedByTenantId": {
-            "value": "fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1"
-        },
-        "authorizations": {
-            "value": [
-                {
-                    "principalId": "ac16bf33-cebb-44ea-b8d2-30650cf35bd2",
-                    "roleDefinitionId": "cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e",
-                    "principalIdDisplayName": "Helpdesk Support"
-                },
-                {
-                    "principalId": "3a829362-01c3-4bda-b6a2-fcbbb32169d0",
-                    "roleDefinitionId": "cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e",
-                    "principalIdDisplayName": "Partner Admin"
-                }
-              
-            ]
-        },
-            "marketplaceOffer": {
-            "value": "No"
-        },
-            "marketplacePublisherId": {
-            "value": "marketplace-test"
-        },
-            "marketplaceOfferId": {
-            "value": "xc-partner-support-offering"
-        },
-            "marketplacePlanId": {
-            "value": "xcpartner"
-        },
-        "marketplacePlanVersion": {
-            "value": "2.0.0"
-        },
-        "conditionalAccessPolicyName": {
-            "value": "Exclude MSP tenant users from MFA"
-        },
-        "createConditionalAccessPolicy": {
-            "value": true
-        "createMspConditionalAccessPolicy": {
-            "value": true
-        },
-        "conditionalAccessPolicyDisplayName": {
-            "value": "Exclude MSP from MFA for Azure management apps"
+        {
+          "principalId": "3a829362-01c3-4bda-b6a2-fcbbb32169d0",
+          "roleDefinitionId": "cfd33db0-3dd1-45e3-aa9d-cdbdf3b6f24e",
+          "principalIdDisplayName": "Partner Admin"
         }
+      ]
+    },
+    "marketplaceOffer": {
+      "value": "No"
+    },
+    "marketplacePublisherId": {
+      "value": "marketplace-test"
+    },
+    "marketplaceOfferId": {
+      "value": "xc-partner-support-offering"
+    },
+    "marketplacePlanId": {
+      "value": "xcpartner"
+    },
+    "marketplacePlanVersion": {
+      "value": "2.0.0"
+    },
+    "createConditionalAccessPolicy": {
+      "value": true
+    },
+    "conditionalAccessPolicyDisplayName": {
+      "value": "Exclude MSP from MFA for Azure management apps"
     }
+  }
 }
