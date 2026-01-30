@@ -38,8 +38,14 @@
             "marketplacePlanId": {
             "value": "xcpartner"
         },
-            "marketplacePlanVersion": {
+        "marketplacePlanVersion": {
             "value": "2.0.0"
-        }        
+        },
+        "conditionalAccessPolicyName": {
+            "value": "Exclude MSP tenant users from MFA"
+        },
+        "createConditionalAccessPolicy": {
+            "value": true
+        }
     }
 }
