@@ -107,11 +107,11 @@ The wizard includes common Azure RBAC roles:
 ### Required Parameters
 
 - `managedByTenantId`: Partner tenant ID (GUID)
-- `offerName`: Display name for the delegation
-- `offerDescription`: Description of the delegation
+- `mspOfferName`: Display name for the delegation
+- `mspOfferDescription`: Description of the delegation
 - `authorizations`: Array of authorization objects
-- `conditionalAccessPolicyName`: Display name for the conditional access policy
-- `createConditionalAccessPolicy`: Whether to create the conditional access policy
+- `conditionalAccessPolicyDisplayName`: Display name for the conditional access policy
+- `createConditionalAccessPolicy`: Whether to request the conditional access policy (intent only)
 
 ### Authorization Object Structure
 
