@@ -108,6 +108,30 @@
                 }
               }
             ]
+          },
+          {
+            "name": "conditionalAccessSection",
+            "type": "Microsoft.Common.Section",
+            "label": "Conditional Access policy",
+            "elements": [
+              {
+                "name": "createConditionalAccessPolicy",
+                "type": "Microsoft.Common.CheckBox",
+                "label": "Create Conditional Access policy to require MFA",
+                "defaultValue": true,
+                "options": {
+                  "description": "When enabled, a Conditional Access policy will require MFA for Azure portal, Azure management, and Microsoft Graph while excluding users from the MSP tenant (fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1). Session controls will be left as none."
+                }
+              },
+              {
+                "name": "conditionalAccessInfo",
+                "type": "Microsoft.Common.InfoBox",
+                "options": {
+                  "icon": "Info",
+                  "text": "If enabled, the Conditional Access policy will require MFA for Azure portal, Azure management, and Microsoft Graph while excluding users from the MSP tenant (fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1). Session controls will be left as none."
+                }
+              }
+            ]
           }
         ]
       },
@@ -167,6 +191,14 @@
                 "options": {
                   "text": "  • Partner Admin: Support Request Contributor"
                 }
+              },
+              {
+                "name": "caSummary",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "Conditional Access: MFA required for Azure portal, Azure management, and Microsoft Graph (MSP tenant excluded)"
+                }
               }
             ]
           }
@@ -193,7 +225,9 @@
       "marketplacePublisherId": "marketplace-test",
       "marketplaceOfferId": "xc-partner-support-offering",
       "marketplacePlanId": "xcpartner",
-      "marketplacePlanVersion": "2.0.0"
+      "marketplacePlanVersion": "2.0.0",
+      "conditionalAccessPolicyName": "Exclude MSP tenant users from MFA",
+      "createConditionalAccessPolicy": "[steps('permissions').createConditionalAccessPolicy]"
     }
   }
 }
