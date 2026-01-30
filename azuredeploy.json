@@ -61,18 +61,18 @@
                 "description": "Must match the Azure Marketplace Plan version for the plan within the marketplace offer."
             }
         },
-        "conditionalAccessPolicyName": {
-            "type": "string",
-            "defaultValue": "Exclude MSP tenant users from MFA",
-            "metadata": {
-                "description": "Display name for the conditional access policy that excludes MSP users from MFA in Azure portal, Azure management, and Microsoft Graph."
-            }
-        },
-        "createConditionalAccessPolicy": {
+        "createMspConditionalAccessPolicy": {
             "type": "bool",
             "defaultValue": true,
             "metadata": {
-                "description": "Whether to create the conditional access policy to exclude MSP tenant users from MFA."
+                "description": "Create a conditional access policy that requires MFA for Azure management apps while excluding the managed service provider tenant."
+            }
+        },
+        "conditionalAccessPolicyDisplayName": {
+            "type": "string",
+            "defaultValue": "Exclude MSP from MFA for Azure management apps",
+            "metadata": {
+                "description": "Display name for the conditional access policy created in Microsoft Entra ID."
             }
         }
     },
@@ -112,13 +112,12 @@
             }
         },
         {
-            "condition": "[parameters('createConditionalAccessPolicy')]",
             "type": "Microsoft.Graph/conditionalAccessPolicies",
-            "apiVersion": "2023-01-31-preview",
-            "name": "[variables('conditionalAccessPolicyId')]",
-            "scope": "/",
+            "apiVersion": "2022-04-01",
+            "name": "[parameters('conditionalAccessPolicyDisplayName')]",
+            "condition": "[parameters('createMspConditionalAccessPolicy')]",
             "properties": {
-                "displayName": "[parameters('conditionalAccessPolicyName')]",
+                "displayName": "[parameters('conditionalAccessPolicyDisplayName')]",
                 "state": "enabled",
                 "conditions": {
                     "users": {
@@ -166,13 +165,9 @@
             "type": "object",
             "value": "[if(equals(parameters('marketplaceOffer'), 'Yes'), variables('marketplacePlan'), json('{\"offer\": \"No marketplace offer\"}'))]"
         },
-        "conditionalAccessPolicyName": {
+        "conditionalAccessPolicyDisplayName": {
             "type": "string",
-            "value": "[parameters('conditionalAccessPolicyName')]"
-        },
-        "conditionalAccessPolicyEnabled": {
-            "type": "bool",
-            "value": "[parameters('createConditionalAccessPolicy')]"
+            "value": "[if(parameters('createMspConditionalAccessPolicy'), parameters('conditionalAccessPolicyDisplayName'), 'Conditional access policy not created')]"
         }
     }
 }
