@@ -3,10 +3,10 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "mspOfferName": {
-      "value": "Partner Lighthouse Delegation"
+      "value": "MVSS365 Managed Services"
     },
     "mspOfferDescription": {
-      "value": "Delegated Azure management via Azure Lighthouse"
+      "value": "Managed Services from MVSS365"
     },
     "managedByTenantId": {
       "value": "fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1"
