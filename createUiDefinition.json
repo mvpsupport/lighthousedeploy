@@ -29,37 +29,6 @@
     ],
     "steps": [
       {
-        "name": "scope",
-        "label": "Deployment scope",
-        "elements": [
-          {
-            "name": "infoBox",
-            "type": "Microsoft.Common.InfoBox",
-            "options": {
-              "icon": "Info",
-              "text": "Select the management group where the Lighthouse delegation will be registered. All subscriptions under this management group (current and future) will be able to activate this delegation."
-            }
-          },
-          {
-            "name": "managementGroupSelector",
-            "type": "Microsoft.Solutions.ManagementGroupSelector",
-            "label": "Management group",
-            "toolTip": "Select the management group for delegation registration",
-            "constraints": {
-              "required": true
-            }
-          },
-          {
-            "name": "scopeExplanation",
-            "type": "Microsoft.Common.InfoBox",
-            "options": {
-              "icon": "Info",
-              "text": "This deployment will create a registration definition at the selected management group scope, making it available to all subscriptions under that management group. Each subscription can then activate the delegation as needed."
-            }
-          }
-        ]
-      },
-      {
         "name": "partnerInfo",
         "label": "Partner information",
         "elements": [
@@ -196,14 +165,6 @@
                 }
               },
               {
-                "name": "managementGroupInfo",
-                "type": "Microsoft.Common.TextBlock",
-                "visible": true,
-                "options": {
-                  "text": "[concat('Management group: ', steps('scope').managementGroupSelector.managementGroupId)]"
-                }
-              },
-              {
                 "name": "tenantId",
                 "type": "Microsoft.Common.TextBlock",
                 "visible": true,
@@ -249,7 +210,6 @@
       }
     ],
     "outputs": {
-      "managementGroupId": "[steps('scope').managementGroupSelector.managementGroupId]",
       "mspOfferName": "[basics('offerName')]",
       "mspOfferDescription": "[basics('offerDescription')]",
       "managedByTenantId": "fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1",
