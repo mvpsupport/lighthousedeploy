@@ -29,6 +29,30 @@
     ],
     "steps": [
       {
+        "name": "subscriptionSelection",
+        "label": "Subscriptions",
+        "elements": [
+          {
+            "name": "infoBox",
+            "type": "Microsoft.Common.InfoBox",
+            "options": {
+              "icon": "Info",
+              "text": "Select one or more subscriptions that will receive the Azure Lighthouse delegation. The delegation will be deployed to all selected subscriptions."
+            }
+          },
+          {
+            "name": "targetSubscriptions",
+            "type": "Microsoft.Common.SubscriptionSelector",
+            "label": "Subscriptions to delegate",
+            "multiSelect": true,
+            "constraints": {
+              "required": true
+            },
+            "toolTip": "Select the subscriptions where MVSS365 will be granted delegated access."
+          }
+        ]
+      },
+      {
         "name": "partnerInfo",
         "label": "Partner information",
         "elements": [
@@ -165,6 +189,14 @@
                 }
               },
               {
+                "name": "subscriptionCount",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "[concat('Subscriptions selected: ', length(steps('subscriptionSelection').targetSubscriptions.subscriptionIds))]"
+                }
+              },
+              {
                 "name": "tenantId",
                 "type": "Microsoft.Common.TextBlock",
                 "visible": true,
@@ -210,6 +242,7 @@
       }
     ],
     "outputs": {
+      "targetSubscriptions": "[steps('subscriptionSelection').targetSubscriptions.subscriptionIds]",
       "mspOfferName": "[basics('offerName')]",
       "mspOfferDescription": "[basics('offerDescription')]",
       "managedByTenantId": "fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1",

@@ -9,7 +9,7 @@ Azure Lighthouse enables cross-tenant and multi-tenant management, allowing serv
 ## Features
 
 - **Guided Wizard Interface**: Step-by-step UI for configuring Lighthouse delegations
-- **Subscription Selection**: Deploy during wizard flow - Azure Portal automatically handles subscription context
+- **Simple Deployment**: Select subscription in Azure Portal, then follow the guided wizard
 - **Multiple Authorizations**: Grant access to multiple users, groups, or service principals
 - **Pre-configured for MVSS365**: Hardcoded tenant IDs and authorizations for quick deployment
 - **Conditional Access Policy**: Captures intent for MFA policy enforcement
@@ -17,10 +17,10 @@ Azure Lighthouse enables cross-tenant and multi-tenant management, allowing serv
 
 ## Prerequisites
 
-- Azure subscription where you want to delegate access
+- One or more Azure subscriptions where you want to delegate access
 - Partner tenant ID (Directory ID)
 - Object IDs of users, groups, or service principals in the partner tenant
-- Appropriate permissions to deploy at subscription scope
+- Appropriate permissions to deploy at tenant scope (for multi-subscription deployment)
 
 ## Deployment Options
 
@@ -32,32 +32,38 @@ Azure Lighthouse enables cross-tenant and multi-tenant management, allowing serv
 
    [deploy-link]: https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fxc-chris%2Flighthousedeploy%2Fmain%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fxc-chris%2Flighthousedeploy%2Fmain%2FcreateUiDefinition.json
 
-2. **Select your subscription** using the Azure Portal's subscription picker at the top
-3. Follow the wizard steps:
+2. Follow the wizard steps:
    - **Basics**: Enter delegation name and description
+   - **Subscriptions**: Select one or more subscriptions to delegate (multi-select supported)
    - **Partner Information**: Review the pre-configured managing tenant ID
    - **Access & Permissions**: Review pre-configured authorizations and conditional access settings
    - **Review + Create**: Review and deploy
 
+**Note:** You can select multiple subscriptions in a single deployment. The delegation will be automatically deployed to all selected subscriptions.
+
 ### Option 2: Deploy via Azure CLI
 
 ```bash
-az deployment sub create \
+az deployment tenant create \
   --name lighthouse-delegation \
   --location <region> \
   --template-file azuredeploy.json \
   --parameters @azuredeploy.parameters.json
 ```
 
+**Note:** Requires permissions at tenant root scope. Update the `targetSubscriptions` array in azuredeploy.parameters.json with your subscription IDs.
+
 ### Option 3: Deploy via PowerShell
 
 ```powershell
-New-AzSubscriptionDeployment `
+New-AzTenantDeployment `
   -Name lighthouse-delegation `
   -Location <region> `
   -TemplateFile .\azuredeploy.json `
   -TemplateParameterFile .\azuredeploy.parameters.json
 ```
+
+**Note:** Requires permissions at tenant root scope. Update the `targetSubscriptions` array in azuredeploy.parameters.json with your subscription IDs.
 
 ## Configuration Guide
 
@@ -109,6 +115,7 @@ The wizard includes common Azure RBAC roles:
 
 ### Required Parameters
 
+- `targetSubscriptions`: Array of subscription IDs that will receive the delegation
 - `managedByTenantId`: Partner tenant ID (GUID)
 - `mspOfferName`: Display name for the delegation
 - `mspOfferDescription`: Description of the delegation

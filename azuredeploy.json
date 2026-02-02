@@ -1,7 +1,13 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "targetSubscriptions": {
+      "type": "array",
+      "metadata": {
+        "description": "Array of subscription IDs that will receive the Lighthouse delegation."
+      }
+    },
     "mspOfferName": {
       "type": "string",
       "metadata": {
@@ -89,26 +95,83 @@
   },
   "resources": [
     {
-      "type": "Microsoft.ManagedServices/registrationDefinitions",
-      "apiVersion": "2019-06-01",
-      "name": "[variables('mspRegistrationName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[concat('lighthouse-', parameters('targetSubscriptions')[copyIndex()])]",
+      "subscriptionId": "[parameters('targetSubscriptions')[copyIndex()]]",
+      "location": "eastus",
       "properties": {
-        "registrationDefinitionName": "[parameters('mspOfferName')]",
-        "description": "[parameters('mspOfferDescription')]",
-        "managedByTenantId": "[parameters('managedByTenantId')]",
-        "authorizations": "[parameters('authorizations')]"
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.ManagedServices/registrationDefinitions",
+              "apiVersion": "2019-06-01",
+              "name": "[guid(parameters('mspOfferName'))]",
+              "properties": {
+                "registrationDefinitionName": "[parameters('mspOfferName')]",
+                "description": "[parameters('mspOfferDescription')]",
+                "managedByTenantId": "[parameters('managedByTenantId')]",
+                "authorizations": "[parameters('authorizations')]"
+              },
+              "plan": "[if(equals(parameters('marketplaceOffer'), 'Yes'), variables('marketplacePlan'), json('null'))]"
+            },
+            {
+              "type": "Microsoft.ManagedServices/registrationAssignments",
+              "apiVersion": "2019-06-01",
+              "name": "[guid(parameters('mspOfferName'))]",
+              "dependsOn": [
+                "[guid(parameters('mspOfferName'))]"
+              ],
+              "properties": {
+                "registrationDefinitionId": "[subscriptionResourceId('Microsoft.ManagedServices/registrationDefinitions', guid(parameters('mspOfferName')))]"
+              }
+            }
+          ],
+          "variables": {
+            "marketplacePlan": {
+              "name": "[parameters('marketplacePlanId')]",
+              "product": "[parameters('marketplaceOfferId')]",
+              "publisher": "[parameters('marketplacePublisherId')]",
+              "version": "[parameters('marketplacePlanVersion')]"
+            }
+          },
+          "parameters": {
+            "mspOfferName": {
+              "value": "[parameters('mspOfferName')]"
+            },
+            "mspOfferDescription": {
+              "value": "[parameters('mspOfferDescription')]"
+            },
+            "managedByTenantId": {
+              "value": "[parameters('managedByTenantId')]"
+            },
+            "authorizations": {
+              "value": "[parameters('authorizations')]"
+            },
+            "marketplaceOffer": {
+              "value": "[parameters('marketplaceOffer')]"
+            },
+            "marketplacePublisherId": {
+              "value": "[parameters('marketplacePublisherId')]"
+            },
+            "marketplaceOfferId": {
+              "value": "[parameters('marketplaceOfferId')]"
+            },
+            "marketplacePlanId": {
+              "value": "[parameters('marketplacePlanId')]"
+            },
+            "marketplacePlanVersion": {
+              "value": "[parameters('marketplacePlanVersion')]"
+            }
+          }
+        }
       },
-      "plan": "[if(equals(parameters('marketplaceOffer'), 'Yes'), variables('marketplacePlan'), json('null'))]"
-    },
-    {
-      "type": "Microsoft.ManagedServices/registrationAssignments",
-      "apiVersion": "2019-06-01",
-      "name": "[variables('mspAssignmentName')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
-      ],
-      "properties": {
-        "registrationDefinitionId": "[resourceId('Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
+      "copy": {
+        "name": "subscriptionLoop",
+        "count": "[length(parameters('targetSubscriptions'))]"
       }
     }
   ],
