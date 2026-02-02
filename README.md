@@ -28,7 +28,9 @@ Azure Lighthouse enables cross-tenant and multi-tenant management, allowing serv
 
 1. Click the button below to launch the deployment wizard:
 
-   [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmvpsupport%2Flighthousedeploy%2Fmain%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fmvpsupport%2Flighthousedeploy%2Fmain%2FcreateUiDefinition.json)
+   [![Deploy to Azure](https://aka.ms/deploytoazurebutton)][deploy-link]
+
+   [deploy-link]: https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fxc-chris%2Flighthousedeploy%2Fmain%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fxc-chris%2Flighthousedeploy%2Fmain%2FcreateUiDefinition.json
 
 2. Follow the wizard steps:
    - **Basics**: Enter delegation name and description
