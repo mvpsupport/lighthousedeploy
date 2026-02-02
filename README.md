@@ -1,6 +1,6 @@
-# Azure Lighthouse Deployment Wizard
+# Azure Lighthouse Multi-Subscription Deployment
 
-This template provides a guided wizard experience for deploying Azure Lighthouse delegations, enabling service providers to manage customer Azure subscriptions.
+This template provides a guided wizard experience for deploying Azure Lighthouse delegations to multiple subscriptions simultaneously, enabling service providers to manage customer Azure subscriptions at scale.
 
 ## What is Azure Lighthouse?
 
@@ -8,19 +8,22 @@ Azure Lighthouse enables cross-tenant and multi-tenant management, allowing serv
 
 ## Features
 
+- **Multi-Subscription Deployment**: Deploy Lighthouse delegation to multiple subscriptions in a single operation
+- **Subscription Selector**: Choose which subscriptions receive the delegation via an intuitive picker
 - **Guided Wizard Interface**: Step-by-step UI for configuring Lighthouse delegations
 - **Multiple Authorizations**: Grant access to multiple users, groups, or service principals
 - **Common RBAC Roles**: Pre-configured list of frequently used Azure roles
 - **Validation**: Built-in GUID validation for tenant IDs and principal IDs
-- **Conditional Access Policy**: Creates a policy that enforces MFA for Azure portal, Azure management, and Microsoft Graph while excluding MSP tenant users
+- **Conditional Access Policy**: Captures intent for MFA policy enforcement for Azure portal, Azure management, and Microsoft Graph while excluding MSP tenant users
 - **Review Step**: Summary view before deployment
 
 ## Prerequisites
 
-- Azure subscription where you want to delegate access
+- One or more Azure subscriptions where you want to delegate access
+- Management group access to deploy across multiple subscriptions
 - Partner tenant ID (Directory ID)
 - Object IDs of users, groups, or service principals in the partner tenant
-- Appropriate permissions to deploy at subscription scope
+- Appropriate permissions to deploy at management group scope (or owner/contributor on each target subscription)
 
 ## Deployment Options
 
@@ -34,29 +37,40 @@ Azure Lighthouse enables cross-tenant and multi-tenant management, allowing serv
 
 2. Follow the wizard steps:
    - **Basics**: Enter delegation name and description
-   - **Partner Information**: Provide the managing tenant ID
-   - **Access & Permissions**: Configure authorizations (who gets what access)
-   - **Review + Create**: Review and deploy
+   - **Target Subscriptions**: Select one or more subscriptions to receive the delegation
+   - **Partner Information**: Review the pre-configured managing tenant ID
+   - **Access & Permissions**: Review pre-configured authorizations and conditional access settings
+   - **Review + Create**: Review and deploy to all selected subscriptions
 
 ### Option 2: Deploy via Azure CLI
 
 ```bash
-az deployment sub create \
+# Deploy to management group (recommended for multiple subscriptions)
+az deployment mg create \
   --name lighthouse-delegation \
   --location <region> \
+  --management-group-id <management-group-id> \
   --template-file azuredeploy.json \
-  --parameters @azuredeploy.parameters.json
+  --parameters @azuredeploy.parameters.json \
+  --parameters targetSubscriptions='["<subscription-id-1>","<subscription-id-2>"]'
 ```
+
+**Note:** Update the `targetSubscriptions` parameter with an array of subscription IDs you want to delegate.
 
 ### Option 3: Deploy via PowerShell
 
 ```powershell
-New-AzSubscriptionDeployment `
+# Deploy to management group
+New-AzManagementGroupDeployment `
   -Name lighthouse-delegation `
   -Location <region> `
+  -ManagementGroupId <management-group-id> `
   -TemplateFile .\azuredeploy.json `
-  -TemplateParameterFile .\azuredeploy.parameters.json
+  -TemplateParameterFile .\azuredeploy.parameters.json `
+  -targetSubscriptions @("<subscription-id-1>", "<subscription-id-2>")
 ```
+
+**Note:** Replace `<management-group-id>` and subscription IDs with your actual values.
 
 ## Configuration Guide
 
@@ -108,6 +122,7 @@ The wizard includes common Azure RBAC roles:
 
 ### Required Parameters
 
+- `targetSubscriptions`: Array of subscription IDs to receive the delegation
 - `managedByTenantId`: Partner tenant ID (GUID)
 - `mspOfferName`: Display name for the delegation
 - `mspOfferDescription`: Description of the delegation
