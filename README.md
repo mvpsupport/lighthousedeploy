@@ -1,6 +1,6 @@
-# Azure Lighthouse Multi-Subscription Deployment
+# Azure Lighthouse Management Group Deployment
 
-This template provides a guided wizard experience for deploying Azure Lighthouse delegations to multiple subscriptions simultaneously, enabling service providers to manage customer Azure subscriptions at scale.
+This template provides a guided wizard experience for deploying Azure Lighthouse delegations to all subscriptions under a management group automatically, enabling service providers to manage customer Azure subscriptions at scale.
 
 ## What is Azure Lighthouse?
 
@@ -8,22 +8,21 @@ Azure Lighthouse enables cross-tenant and multi-tenant management, allowing serv
 
 ## Features
 
-- **Multi-Subscription Deployment**: Deploy Lighthouse delegation to multiple subscriptions in a single operation
-- **Subscription Selector**: Choose which subscriptions receive the delegation via an intuitive picker
+- **Management Group Scoped**: Select a management group and automatically delegate ALL subscriptions under it
+- **Automatic Delegation via Azure Policy**: Uses Azure Policy deployIfNotExists to automatically assign delegations
+- **Future-Proof**: New subscriptions added to the management group automatically receive the delegation
 - **Guided Wizard Interface**: Step-by-step UI for configuring Lighthouse delegations
 - **Multiple Authorizations**: Grant access to multiple users, groups, or service principals
-- **Common RBAC Roles**: Pre-configured list of frequently used Azure roles
-- **Validation**: Built-in GUID validation for tenant IDs and principal IDs
 - **Conditional Access Policy**: Captures intent for MFA policy enforcement for Azure portal, Azure management, and Microsoft Graph while excluding MSP tenant users
 - **Review Step**: Summary view before deployment
 
 ## Prerequisites
 
-- One or more Azure subscriptions where you want to delegate access
-- Management group access to deploy across multiple subscriptions
+- Management group with one or more Azure subscriptions
+- Owner or Contributor access at the management group scope
 - Partner tenant ID (Directory ID)
 - Object IDs of users, groups, or service principals in the partner tenant
-- Appropriate permissions to deploy at management group scope (or owner/contributor on each target subscription)
+- Permissions to create Azure Policy definitions and assignments at management group scope
 
 ## Deployment Options
 
@@ -37,25 +36,32 @@ Azure Lighthouse enables cross-tenant and multi-tenant management, allowing serv
 
 2. Follow the wizard steps:
    - **Basics**: Enter delegation name and description
-   - **Target Subscriptions**: Select one or more subscriptions to receive the delegation
+   - **Deployment Scope**: Select the management group (all subscriptions under it will receive delegation)
    - **Partner Information**: Review the pre-configured managing tenant ID
    - **Access & Permissions**: Review pre-configured authorizations and conditional access settings
-   - **Review + Create**: Review and deploy to all selected subscriptions
+   - **Review + Create**: Review and deploy
+
+3. The deployment will:
+   - Create a Lighthouse registration definition at the management group
+   - Create an Azure Policy that automatically deploys the delegation to all subscriptions
+   - Assign the policy to the management group
+   - Automatically deploy delegation to existing subscriptions (within ~15 minutes)
+   - Automatically delegate future subscriptions added to the management group
 
 ### Option 2: Deploy via Azure CLI
 
 ```bash
-# Deploy to management group (recommended for multiple subscriptions)
+# Deploy to management group
 az deployment mg create \
   --name lighthouse-delegation \
   --location <region> \
   --management-group-id <management-group-id> \
   --template-file azuredeploy.json \
   --parameters @azuredeploy.parameters.json \
-  --parameters targetSubscriptions='["<subscription-id-1>","<subscription-id-2>"]'
+  --parameters managementGroupId='<management-group-id>'
 ```
 
-**Note:** Update the `targetSubscriptions` parameter with an array of subscription IDs you want to delegate.
+**Note:** Replace `<management-group-id>` with your management group ID. The deployment will automatically delegate all subscriptions under this management group.
 
 ### Option 3: Deploy via PowerShell
 
@@ -67,10 +73,10 @@ New-AzManagementGroupDeployment `
   -ManagementGroupId <management-group-id> `
   -TemplateFile .\azuredeploy.json `
   -TemplateParameterFile .\azuredeploy.parameters.json `
-  -targetSubscriptions @("<subscription-id-1>", "<subscription-id-2>")
+  -managementGroupId "<management-group-id>"
 ```
 
-**Note:** Replace `<management-group-id>` and subscription IDs with your actual values.
+**Note:** Replace `<management-group-id>` with your management group ID.
 
 ## Configuration Guide
 
@@ -122,7 +128,7 @@ The wizard includes common Azure RBAC roles:
 
 ### Required Parameters
 
-- `targetSubscriptions`: Array of subscription IDs to receive the delegation
+- `managementGroupId`: Management group ID where delegation will be applied (all subscriptions under it)
 - `managedByTenantId`: Partner tenant ID (GUID)
 - `mspOfferName`: Display name for the delegation
 - `mspOfferDescription`: Description of the delegation

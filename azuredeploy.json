@@ -2,10 +2,10 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "targetSubscriptions": {
-      "type": "array",
+    "managementGroupId": {
+      "type": "string",
       "metadata": {
-        "description": "Array of subscription IDs that will receive the Lighthouse delegation."
+        "description": "Management group ID where the Lighthouse delegation will be registered."
       }
     },
     "mspOfferName": {
@@ -86,6 +86,8 @@
   "variables": {
     "mspRegistrationName": "[guid(parameters('mspOfferName'))]",
     "mspAssignmentName": "[guid(parameters('mspOfferName'))]",
+    "policyDefinitionName": "[concat('Deploy-Lighthouse-', variables('mspRegistrationName'))]",
+    "policyAssignmentName": "[concat('Lighthouse-Assignment-', variables('mspRegistrationName'))]",
     "marketplacePlan": {
       "name": "[parameters('marketplacePlanId')]",
       "product": "[parameters('marketplaceOfferId')]",
@@ -96,83 +98,139 @@
   "resources": [
     {
       "type": "Microsoft.ManagedServices/registrationDefinitions",
-      "apiVersion": "2019-06-01",
+      "apiVersion": "2022-01-01-preview",
       "name": "[variables('mspRegistrationName')]",
+      "scope": "[concat('Microsoft.Management/managementGroups/', parameters('managementGroupId'))]",
       "properties": {
         "registrationDefinitionName": "[parameters('mspOfferName')]",
         "description": "[parameters('mspOfferDescription')]",
         "managedByTenantId": "[parameters('managedByTenantId')]",
-        "authorizations": "[parameters('authorizations')]"
+        "authorizations": "[parameters('authorizations')]",
+        "eligibleAuthorizations": []
       },
       "plan": "[if(equals(parameters('marketplaceOffer'), 'Yes'), variables('marketplacePlan'), json('null'))]"
     },
     {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[concat('lighthouse-assignment-', copyIndex())]",
-      "location": "[deployment().location]",
-      "subscriptionId": "[parameters('targetSubscriptions')[copyIndex()]]",
+      "type": "Microsoft.Authorization/policyDefinitions",
+      "apiVersion": "2021-06-01",
+      "name": "[variables('policyDefinitionName')]",
       "dependsOn": [
-        "[resourceId('Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
+        "[extensionResourceId(concat('Microsoft.Management/managementGroups/', parameters('managementGroupId')), 'Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
       ],
       "properties": {
-        "mode": "Incremental",
-        "expressionEvaluationOptions": {
-          "scope": "inner"
+        "displayName": "[concat('Deploy Lighthouse Delegation: ', parameters('mspOfferName'))]",
+        "description": "Automatically deploys Lighthouse registration assignment to all subscriptions under this management group",
+        "policyType": "Custom",
+        "mode": "All",
+        "metadata": {
+          "category": "Lighthouse"
         },
-        "parameters": {
-          "mspRegistrationId": {
-            "value": "[resourceId('Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
+        "policyRule": {
+          "if": {
+            "field": "type",
+            "equals": "Microsoft.Resources/subscriptions"
           },
-          "mspAssignmentName": {
-            "value": "[variables('mspAssignmentName')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "parameters": {
-            "mspRegistrationId": {
-              "type": "string"
-            },
-            "mspAssignmentName": {
-              "type": "string"
-            }
-          },
-          "resources": [
-            {
+          "then": {
+            "effect": "deployIfNotExists",
+            "details": {
               "type": "Microsoft.ManagedServices/registrationAssignments",
-              "apiVersion": "2019-06-01",
-              "name": "[parameters('mspAssignmentName')]",
-              "properties": {
-                "registrationDefinitionId": "[parameters('mspRegistrationId')]"
+              "roleDefinitionIds": [
+                "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+              ],
+              "existenceCondition": {
+                "field": "Microsoft.ManagedServices/registrationAssignments/registrationDefinitionId",
+                "equals": "[extensionResourceId(concat('Microsoft.Management/managementGroups/', parameters('managementGroupId')), 'Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
+              },
+              "deployment": {
+                "location": "eastus",
+                "properties": {
+                  "mode": "incremental",
+                  "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                      "mspRegistrationId": {
+                        "type": "string"
+                      },
+                      "mspAssignmentName": {
+                        "type": "string"
+                      }
+                    },
+                    "resources": [
+                      {
+                        "type": "Microsoft.ManagedServices/registrationAssignments",
+                        "apiVersion": "2019-06-01",
+                        "name": "[parameters('mspAssignmentName')]",
+                        "properties": {
+                          "registrationDefinitionId": "[parameters('mspRegistrationId')]"
+                        }
+                      }
+                    ]
+                  },
+                  "parameters": {
+                    "mspRegistrationId": {
+                      "value": "[extensionResourceId(concat('Microsoft.Management/managementGroups/', parameters('managementGroupId')), 'Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
+                    },
+                    "mspAssignmentName": {
+                      "value": "[variables('mspAssignmentName')]"
+                    }
+                  }
+                }
               }
             }
-          ]
+          }
         }
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/policyAssignments",
+      "apiVersion": "2021-06-01",
+      "name": "[variables('policyAssignmentName')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Authorization/policyDefinitions', variables('policyDefinitionName'))]"
+      ],
+      "location": "eastus",
+      "identity": {
+        "type": "SystemAssigned"
       },
-      "copy": {
-        "name": "subscriptionCopy",
-        "count": "[length(parameters('targetSubscriptions'))]"
+      "properties": {
+        "displayName": "[concat('Auto-deploy Lighthouse: ', parameters('mspOfferName'))]",
+        "description": "Automatically deploys Lighthouse delegation to all subscriptions",
+        "policyDefinitionId": "[resourceId('Microsoft.Authorization/policyDefinitions', variables('policyDefinitionName'))]",
+        "scope": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('managementGroupId'))]"
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(parameters('managementGroupId'), 'contributor')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Authorization/policyAssignments', variables('policyAssignmentName'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[concat('/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "principalId": "[reference(resourceId('Microsoft.Authorization/policyAssignments', variables('policyAssignmentName')), '2021-06-01', 'Full').identity.principalId]",
+        "principalType": "ServicePrincipal",
+        "scope": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('managementGroupId'))]"
       }
     }
   ],
   "outputs": {
     "mspRegistrationDefinitionId": {
       "type": "string",
-      "value": "[resourceId('Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
+      "value": "[extensionResourceId(concat('Microsoft.Management/managementGroups/', parameters('managementGroupId')), 'Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
     },
     "mspOfferName": {
       "type": "string",
       "value": "[parameters('mspOfferName')]"
     },
-    "targetedSubscriptionCount": {
-      "type": "int",
-      "value": "[length(parameters('targetSubscriptions'))]"
+    "managementGroupId": {
+      "type": "string",
+      "value": "[parameters('managementGroupId')]"
     },
-    "targetedSubscriptions": {
-      "type": "array",
-      "value": "[parameters('targetSubscriptions')]"
+    "scope": {
+      "type": "string",
+      "value": "All subscriptions under the selected management group"
     },
     "authorizations": {
       "type": "array",

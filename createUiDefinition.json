@@ -29,25 +29,32 @@
     ],
     "steps": [
       {
-        "name": "subscriptions",
-        "label": "Target subscriptions",
+        "name": "scope",
+        "label": "Deployment scope",
         "elements": [
           {
             "name": "infoBox",
             "type": "Microsoft.Common.InfoBox",
             "options": {
               "icon": "Info",
-              "text": "Select the subscriptions that will receive the Azure Lighthouse delegation. The selected subscriptions will grant access to the partner tenant."
+              "text": "Select the management group where the Lighthouse delegation will be registered. All subscriptions under this management group (current and future) will be able to activate this delegation."
             }
           },
           {
-            "name": "targetSubscriptions",
-            "type": "Microsoft.Common.SubscriptionSelector",
-            "label": "Subscriptions",
-            "toolTip": "Select one or more subscriptions to delegate",
-            "multiSelect": true,
+            "name": "managementGroupSelector",
+            "type": "Microsoft.Solutions.ManagementGroupSelector",
+            "label": "Management group",
+            "toolTip": "Select the management group for delegation registration",
             "constraints": {
               "required": true
+            }
+          },
+          {
+            "name": "scopeExplanation",
+            "type": "Microsoft.Common.InfoBox",
+            "options": {
+              "icon": "Info",
+              "text": "This deployment will create a registration definition at the selected management group scope, making it available to all subscriptions under that management group. Each subscription can then activate the delegation as needed."
             }
           }
         ]
@@ -189,11 +196,11 @@
                 }
               },
               {
-                "name": "subscriptionCount",
+                "name": "managementGroupInfo",
                 "type": "Microsoft.Common.TextBlock",
                 "visible": true,
                 "options": {
-                  "text": "[concat('Target subscriptions: ', string(length(steps('subscriptions').targetSubscriptions.subscriptionIds)))]"
+                  "text": "[concat('Management group: ', steps('scope').managementGroupSelector.managementGroupId)]"
                 }
               },
               {
@@ -242,7 +249,7 @@
       }
     ],
     "outputs": {
-      "targetSubscriptions": "[steps('subscriptions').targetSubscriptions.subscriptionIds]",
+      "managementGroupId": "[steps('scope').managementGroupSelector.managementGroupId]",
       "mspOfferName": "[basics('offerName')]",
       "mspOfferDescription": "[basics('offerDescription')]",
       "managedByTenantId": "fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1",
