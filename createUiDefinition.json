@@ -8,7 +8,7 @@
         "name": "offerName",
         "type": "Microsoft.Common.TextBox",
         "label": "Delegation name",
-        "defaultValue": "Xcelocloud Lighthouse Delegation",
+        "defaultValue": "MVSS365 Lighthouse Delegation",
         "constraints": {
           "required": true,
           "minLength": 3,
@@ -19,7 +19,7 @@
         "name": "offerDescription",
         "type": "Microsoft.Common.TextBox",
         "label": "Delegation description",
-        "defaultValue": "Delegated Azure management via Azure Lighthouse",
+        "defaultValue": "Delegated Permissions for MVSS365 Support via Azure Lighthouse",
         "constraints": {
           "required": true,
           "minLength": 3,
