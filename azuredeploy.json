@@ -100,7 +100,6 @@
       "type": "Microsoft.ManagedServices/registrationDefinitions",
       "apiVersion": "2022-01-01-preview",
       "name": "[variables('mspRegistrationName')]",
-      "scope": "[concat('Microsoft.Management/managementGroups/', parameters('managementGroupId'))]",
       "properties": {
         "registrationDefinitionName": "[parameters('mspOfferName')]",
         "description": "[parameters('mspOfferDescription')]",
@@ -115,7 +114,7 @@
       "apiVersion": "2021-06-01",
       "name": "[variables('policyDefinitionName')]",
       "dependsOn": [
-        "[extensionResourceId(concat('Microsoft.Management/managementGroups/', parameters('managementGroupId')), 'Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
+        "[resourceId('Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
       ],
       "properties": {
         "displayName": "[concat('Deploy Lighthouse Delegation: ', parameters('mspOfferName'))]",
@@ -139,7 +138,7 @@
               ],
               "existenceCondition": {
                 "field": "Microsoft.ManagedServices/registrationAssignments/registrationDefinitionId",
-                "equals": "[extensionResourceId(concat('Microsoft.Management/managementGroups/', parameters('managementGroupId')), 'Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
+                "equals": "[resourceId('Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
               },
               "deployment": {
                 "location": "eastus",
@@ -169,7 +168,7 @@
                   },
                   "parameters": {
                     "mspRegistrationId": {
-                      "value": "[extensionResourceId(concat('Microsoft.Management/managementGroups/', parameters('managementGroupId')), 'Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
+                      "value": "[resourceId('Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
                     },
                     "mspAssignmentName": {
                       "value": "[variables('mspAssignmentName')]"
@@ -218,7 +217,7 @@
   "outputs": {
     "mspRegistrationDefinitionId": {
       "type": "string",
-      "value": "[extensionResourceId(concat('Microsoft.Management/managementGroups/', parameters('managementGroupId')), 'Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
+      "value": "[resourceId('Microsoft.ManagedServices/registrationDefinitions', variables('mspRegistrationName'))]"
     },
     "mspOfferName": {
       "type": "string",

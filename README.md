@@ -26,35 +26,15 @@ Azure Lighthouse enables cross-tenant and multi-tenant management, allowing serv
 
 ## Deployment Options
 
-### Option 1: Deploy via Azure Portal (Recommended)
+### Option 1: Deploy via Azure CLI (Recommended)
 
-1. Click the button below to launch the deployment wizard:
-
-   [![Deploy to Azure](https://aka.ms/deploytoazurebutton)][deploy-link]
-
-   [deploy-link]: https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fxc-chris%2Flighthousedeploy%2Fmain%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fxc-chris%2Flighthousedeploy%2Fmain%2FcreateUiDefinition.json
-
-2. Follow the wizard steps:
-   - **Basics**: Enter delegation name and description
-   - **Deployment Scope**: Select the management group (all subscriptions under it will receive delegation)
-   - **Partner Information**: Review the pre-configured managing tenant ID
-   - **Access & Permissions**: Review pre-configured authorizations and conditional access settings
-   - **Review + Create**: Review and deploy
-
-3. The deployment will:
-   - Create a Lighthouse registration definition at the management group
-   - Create an Azure Policy that automatically deploys the delegation to all subscriptions
-   - Assign the policy to the management group
-   - Automatically deploy delegation to existing subscriptions (within ~15 minutes)
-   - Automatically delegate future subscriptions added to the management group
-
-### Option 2: Deploy via Azure CLI
+Management group-scoped templates with custom UI wizards are not fully supported via the standard "Deploy to Azure" button. Use the Azure CLI or PowerShell for the best experience.
 
 ```bash
 # Deploy to management group
 az deployment mg create \
   --name lighthouse-delegation \
-  --location <region> \
+  --location eastus \
   --management-group-id <management-group-id> \
   --template-file azuredeploy.json \
   --parameters @azuredeploy.parameters.json \
@@ -63,13 +43,20 @@ az deployment mg create \
 
 **Note:** Replace `<management-group-id>` with your management group ID. The deployment will automatically delegate all subscriptions under this management group.
 
-### Option 3: Deploy via PowerShell
+The deployment will:
+   - Create a Lighthouse registration definition at the management group
+   - Create an Azure Policy that automatically deploys the delegation to all subscriptions
+   - Assign the policy to the management group
+   - Automatically deploy delegation to existing subscriptions (within ~15 minutes)
+   - Automatically delegate future subscriptions added to the management group
+
+### Option 2: Deploy via PowerShell
 
 ```powershell
 # Deploy to management group
 New-AzManagementGroupDeployment `
   -Name lighthouse-delegation `
-  -Location <region> `
+  -Location eastus `
   -ManagementGroupId <management-group-id> `
   -TemplateFile .\azuredeploy.json `
   -TemplateParameterFile .\azuredeploy.parameters.json `
@@ -77,6 +64,23 @@ New-AzManagementGroupDeployment `
 ```
 
 **Note:** Replace `<management-group-id>` with your management group ID.
+
+### Option 3: Deploy via Azure Portal (Limited Support)
+
+**Note:** Azure Portal's custom deployment wizard has limited support for management group-scoped templates. The custom UI definition may not render properly, and you'll see a basic parameter form instead.
+
+1. Click the button below:
+
+   [![Deploy to Azure](https://aka.ms/deploytoazurebutton)][deploy-link]
+
+   [deploy-link]: https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fxc-chris%2Flighthousedeploy%2Fmain%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fxc-chris%2Flighthousedeploy%2Fmain%2FcreateUiDefinition.json
+
+2. Fill in the parameters manually:
+   - **Management Group Id**: Enter the management group ID
+   - **Msp Offer Name**: `MVSS365 Managed Services`
+   - **Msp Offer Description**: `Managed Services from MVSS365`
+   - **Managed By Tenant Id**: `fc6f8abc-0ae4-4406-abeb-4eb1ca6e07a1`
+   - Leave other parameters as defaults
 
 ## Configuration Guide
 
